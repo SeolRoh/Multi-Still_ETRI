@@ -8,6 +8,7 @@ from config import *
 
 class MERGEDataset(Dataset):
     def __init__(self,data_option='train',path='./'):
+        # train, test 데이터셋 읽기
         if data_option == 'train':
             path = os.path.join(path, 'train_preprocessed_data.json')
             
@@ -29,6 +30,7 @@ class MERGEDataset(Dataset):
             'fear': 6
             }
         
+        # 감정 데이터 SoftMax로 변환
         for idx,data in enumerate(self.data):
             emo_list = [0]*7
             for emo in data['Emotion']:

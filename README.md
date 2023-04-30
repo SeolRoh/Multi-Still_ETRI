@@ -171,14 +171,32 @@ Text Encoder | pretrained Electra | monologg/koelectra-base
 > 😃 Arguments
 - train_crossattention.py
 
-Arguments | Description | Default
-:------------: | :-------------: | :-------------:
---epochs | 모델 반복 훈련 수 | config.py의 train_config에서 설정된 값
---batch | 데이터 batch 사이즈 | config.py의 train_config에서 설정된 값
+Arguments | Description
+:------------: | :-------------:
+--epochs | 모델 반복 훈련 수
+--batch | 데이터 batch 사이즈
+--shuffle | 훈련 데이터의 shuffle 여부
+--lr | 훈련시 사용할 Learning rate 값
+--cuda | 사용할 GPU 정의 (default="cuda:0")
+--save | 모델의 저장 여부
+--model_name | 모델 저장시, 저장할 모델의 이름
+--text_only | 텍스트 데이터 및 인코더만 사용해서 훈련
+--audio_only | 오디오 데이터 및 인코더만 사용해서 훈련
 
+- Distill_knowledge.py
 
+Arguments | Description
+:------------: | :-------------:
+--epochs | 모델 반복 훈련 수
+--batch | 데이터 batch 사이즈
+--shuffle | 훈련 데이터의 shuffle 여부
+--lr | 훈련시 사용할 Learning rate 값
+--cuda | 사용할 GPU 정의 (default="cuda:0")
+--save | 모델의 저장 여부
+--model_name | 모델 저장시, 저장할 모델의 이름
+--text_only | 텍스트 데이터 및 인코더만 사용해서 훈련
+--audio_only | 오디오 데이터 및 인코더만 사용해서 훈련
 
-- train_crossattention.py
 - train_knowledge_distillation.py
 - test.py
 

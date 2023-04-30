@@ -91,6 +91,7 @@ python KD_train_crossattention.py --model_name audio_student --audio_only True
 ```bash
 # pt 파일은 훈련의 5번째 Epoch마다 생성됨. (예: 5, 10, 11....)
 # 여러 파일을 테스트 하기위해 test_all파일에 복사
+mkdir ckpt/test_all
 cp ckpt/* ckpt/test_all/
 python test.py --all
 ```

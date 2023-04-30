@@ -162,10 +162,7 @@ python test.py --all
 ```
 
 > 😆 Base Model
-|     Encoder   |      Architecture      |         pretrained-weights         | 
-| ------------- | ---------------------- | ---------------------------------- |
-| Audio Encoder | pretrained Wav2Vec 2.0 | kresnik/wav2vec2-large-xlsr-korean |
-|  Text Encoder |   pretrained KoElectra |       monologg/koelectra-base      | 
+![](https://github.com/SeolRoh/Multi-Still_ETRI/blob/main/images/Base_Model.PNG)
 
 > 😃 Arguments
 - train.py

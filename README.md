@@ -172,8 +172,9 @@ Text Encoder | pretrained Electra | monologg/koelectra-base
 - train_crossattention.py
 
 Arguments | Description | Default
-:------------: | :-------------:
+:------------: | :-------------: | :-------------:
 --epochs | 모델 반복 훈련 수 | config.py의 train_config에서 설정된 값
+--batch | 데이터 batch 사이즈 | config.py의 train_config에서 설정된 값
 
 
 

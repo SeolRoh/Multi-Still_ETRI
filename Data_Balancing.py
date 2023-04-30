@@ -9,13 +9,14 @@ max_one_emotion = 4000
 max_emotion = 6000
 nclass = 7
 
+# 파일 읽기
 json_path = os.path.join(PATH, 'data', 'total_data.json')
 with open(json_path,'r') as file:
     base_json = json.load(file)
 
+# 감정 클래스 분포 확인
 Final_data = {"data" : []}
 emo_count = {}
-# 감정 클래스 분포 확인
 for idx, item in enumerate(base_json['data']):
     if not (os.path.isfile(os.path.join(PATH, 'TOTAL',  item['wav']))):
         print('파일없음 삭제 :', os.path.join(PATH, 'TOTAL',  item['wav']))
@@ -28,7 +29,7 @@ for idx, item in enumerate(base_json['data']):
 print("감정 클래스 분포 확인")
 print(emo_count)
 
-# Get Emotion Randomly
+# 감정 데이터 셔플
 random.shuffle(base_json['data'])
 
 print("데이터 저장")
@@ -38,7 +39,7 @@ with open(json_path,'w') as j:
     json.dump(base_json,j,ensure_ascii=False, indent=4)
 
 
-# Train Test Split
+# 훈련, 테스트 데이터 split
 train_data, test_data = train_test_split(base_json['data'], train_size=0.8, test_size=0.2, random_state=123, shuffle=True)
 
 train_path = os.path.join(PATH, 'data', 'train_preprocessed_data.json')

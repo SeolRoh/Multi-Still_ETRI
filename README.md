@@ -164,12 +164,16 @@ python test.py --all
 > 😆 Base Model
 
 Encoder | Architecture | pretrained-weights
------------- | ------------- | -------------
+:------------: | :-------------: | :-------------:
 Audio Encoder | pretrained Wav2Vec 2.0 | kresnik/wav2vec2-large-xlsr-korean
 Text Encoder | pretrained Electra | monologg/koelectra-base 
 
 > 😃 Arguments
 - train.py
+Arguments | Description
+:------------: | :-------------:
+Audio Encoder | pretrained Wav2Vec 2.0
+Text Encoder | pretrained Electra
 - train_crossattention.py
 - train_knowledge_distillation.py
 - test.py

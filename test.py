@@ -8,7 +8,7 @@ from torch.utils.data.dataloader import DataLoader
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
 
 from models.multimodal import TextEncoder, SpeechEncoder
-from my_merdataset import *
+from merdataset import *
 from config import *
 from utils import *
 
@@ -41,10 +41,12 @@ def parse_args():
         action='store_true',
         help='test all model ckpt in dir'
     )
+    '''
     parser.add_argument(
         '--do_clf',
         action='store_true',
     )
+    '''
     args = parser.parse_args()
     return args
 
@@ -75,7 +77,7 @@ def test(model, test_dataset):
             batch_y = batch_y.to(args.cuda)
 
             if isinstance(model,SpeechEncoder) or isinstance(model,TextEncoder):
-                outputs = model(batch_x,do_clf=args.do_clf)
+                outputs = model(batch_x)#,do_clf=args.do_clf)
 
             else:
                 outputs = model(batch_x)

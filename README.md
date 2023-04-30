@@ -187,6 +187,14 @@ Arguments | Description
 
 Arguments | Description
 :------------: | :-------------:
+--cuda | 사용할 GPU 정의 (default="cuda:0")
+--teacher_name | 지식 증류할 저장된 모델의 이름
+--data_path | 지식 증류할 데이터의 경로
+
+- KD_train_crossattention.py
+
+Arguments | Description
+:------------: | :-------------:
 --epochs | 모델 반복 훈련 수
 --batch | 데이터 batch 사이즈
 --shuffle | 훈련 데이터의 shuffle 여부
@@ -197,8 +205,15 @@ Arguments | Description
 --text_only | 텍스트 데이터 및 인코더만 사용해서 훈련
 --audio_only | 오디오 데이터 및 인코더만 사용해서 훈련
 
-- train_knowledge_distillation.py
 - test.py
+
+Arguments | Description
+:------------: | :-------------:
+--batch | 데이터 batch 사이즈
+--cuda | 사용할 GPU 정의 (default="cuda:0")
+--model_name | 테스트할 모델의 이름(예: ckpt/[모델이름].pt)
+--all | "ckpt/test_all" 경로 안에 있는 모든 모델 테스트
+
 
 > 😀 Model Architecture
 - `Multi-Still` 경량화 기술 중 하나인 지식 증류 (Knowledge Distillation)를 사용하여 실시간 감정인식을 위한 멀티모달 구조를 경량화하는 방법 

@@ -17,12 +17,7 @@ args = None
 
 def parse_args():
     parser = argparse.ArgumentParser(description='get arguments')
-    parser.add_argument(
-        '--is_training',
-        default=True,
-        required=False,
-        help='run train'
-    )
+
     parser.add_argument(
         '--epochs',
         default=train_config['epochs'],
@@ -49,13 +44,6 @@ def parse_args():
         type=float,
         required=False,
         help='learning rate'
-    )
-    parser.add_argument(
-        '--acc_step',
-        default=train_config['accumulation_steps'],
-        type=int,
-        required=False,
-        help='accumulation steps'
     )
 
     parser.add_argument(
@@ -153,41 +141,40 @@ def main():
 
     audio_conf['path'] = './TOTAL/'
 
-    if args.is_training == True:
-        dataset = MERGEDataset(data_option='train', path='./data/')
-        dataset.prepare_text_data(text_conf)
+    dataset = MERGEDataset(data_option='train', path='./data/')
+    dataset.prepare_text_data(text_conf)
 
-        seed = 1024
-        torch.manual_seed(seed)
-        np.random.seed(seed)
-        random.seed(seed)
+    seed = 1024
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
 
-        model = mini_MultiModalForCrossAttention(audio_conf,text_conf,cross_attention_conf, args.text_only, args.audio_only)
+    model = mini_MultiModalForCrossAttention(audio_conf,text_conf,cross_attention_conf, args.text_only, args.audio_only)
 
-        device = args.cuda
-        print('---------------------',device)
+    device = args.cuda
+    print('---------------------',device)
 
-        model = model.to(device)
-        optimizer = torch.optim.AdamW(params=model.parameters(), lr=args.lr)
+    model = model.to(device)
+    optimizer = torch.optim.AdamW(params=model.parameters(), lr=args.lr)
 
-        if 'ckpt' not in os.listdir():
-            os.mkdir('ckpt')
+    if 'ckpt' not in os.listdir():
+        os.mkdir('ckpt')
 
-        print(model)
-        get_params(model)
+    print(model)
+    get_params(model)
 
-        if args.save:
-            print("checkpoint will be saved every 5epochs!")
+    if args.save:
+        print("checkpoint will be saved every 5epochs!")
 
-        for epoch in range(args.epochs):
+    for epoch in range(args.epochs):
 
-            dataloader = DataLoader(dataset, batch_size=args.batch, shuffle=args.shuffle,
-                                        collate_fn=lambda x: (x, torch.FloatTensor([i['label'] for i in x])))
-            train(model, optimizer, dataloader)
+        dataloader = DataLoader(dataset, batch_size=args.batch, shuffle=args.shuffle,
+                                    collate_fn=lambda x: (x, torch.FloatTensor([i['label'] for i in x])))
+        train(model, optimizer, dataloader)
 
-            if (epoch+1) % 5 == 0:
-                if args.save:
-                    torch.save(model,'./ckpt/{}_epoch{}.pt'.format(args.model_name,epoch))
+        if (epoch+1) % 5 == 0:
+            if args.save:
+                torch.save(model,'./ckpt/{}_epoch{}.pt'.format(args.model_name,epoch))
 
 
 

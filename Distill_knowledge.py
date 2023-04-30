@@ -16,14 +16,6 @@ from utils import *
 def parse_args():
     parser = argparse.ArgumentParser(description='get arguments')
     parser.add_argument(
-        '--batch',
-        default=test_config['batch_size'],
-        type=int,
-        required=False,
-        help='batch size'
-    )
-
-    parser.add_argument(
         '--cuda',
         default=test_config['cuda'],
         help='cuda'
@@ -34,17 +26,6 @@ def parse_args():
         type=str,
         help='checkpoint name to load'
     )
-
-    parser.add_argument(
-        '--all',
-        action='store_true',
-        help='test all model ckpt in dir'
-    )
-    parser.add_argument(
-        '--do_clf',
-        action='store_true',
-    )
-
     parser.add_argument(
         '--data_path',
         type=str,

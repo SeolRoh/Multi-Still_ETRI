@@ -62,6 +62,8 @@ def test(model, test_dataset):
     
     print("Test start")
     model.eval()
+    
+    # 테스트는 스크립트에서의 가장 많이 평가받은 label의 감정을 사용해 CrossEntropyloss를 측정
     loss_func = torch.nn.CrossEntropyLoss(reduction='sum')
     with torch.no_grad():
         dataloader = DataLoader(test_dataset, args.batch,
@@ -81,7 +83,7 @@ def test(model, test_dataset):
 
             else:
                 outputs = model(batch_x)
-
+            
             loss = loss_func(outputs.to(args.cuda), batch_y)
             outputs = outputs.max(dim=1)[1].tolist()
 
@@ -126,10 +128,12 @@ def test(model, test_dataset):
 def main():
     text_conf = pd.Series(text_config)
 
+    # 단일 모델 테스트
     if args.model_name:
         test_data = MERGEDataset(data_option='test', path='./data/')
         test_data.prepare_text_data(text_conf)
 
+        # 모델 불러오기
         model = torch.load('./ckpt/{}.pt'.format(args.model_name))
         loss, acc, recall, precision, f1, confusion, std, params, inference_time = test(model, test_data)
         result = {
@@ -144,6 +148,8 @@ def main():
         print(len(confusion))
         print(confusion)
         print("Saving your test result")
+        
+        # result폴더에 결과 저장
         test_result_path = os.path.join('result', args.model_name, "test_result.json")
 
         if os.path.isdir(os.path.join('result', args.model_name)) == False:
@@ -151,6 +157,7 @@ def main():
         save_dict_to_json(result, test_result_path)
         print("Finish testing")
 
+    # --all == True일 때, ckpt/test_all 폴더에 있는 모든 모델 테스트
     elif args.all:
         model_names = os.listdir('./ckpt/test_all/')
         print(model_names)
@@ -158,7 +165,7 @@ def main():
         test_data.prepare_text_data(text_conf)
         df = []
         for name in model_names:
-
+            # 모델 불러오기
             model = torch.load('./ckpt/test_all/{}'.format(name))
             loss, acc, recall, precision, f1, confusion, std, params, inference_time = test(model, test_data)
 
@@ -177,7 +184,8 @@ def main():
         print("Saving your test result")
         df = pd.DataFrame(df)
         print(df)
-        df.to_csv('./result_all_model2.csv')
+        #result_all_model 이름으로 결과 
+        df.to_csv('./result_all_model.csv')
 
     else:
         print("You need to define specific model name to test")

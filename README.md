@@ -60,7 +60,7 @@ bash setup.sh
 > 😊 Preprocessing
 ```bash
 # 데이터 전처리
-bash Data_Preprocessing.sh
+bash data_preprocessing.sh
 ```
 
 + 7가지 감정 레이블의 데이터 불균형 완화 전후 분포 비교
@@ -121,7 +121,7 @@ python test.py --all
             +--multimodal.py                          # 멀티모달, encoding진행
             +--multimodal_cross_attention.py          # 음성 및 텍스트를 포함한 멀티모달 인코딩 및 크로스 어텐션
 
-      +--data (Data_Preprocessing.sh 실행 후 생성)
+      +--data (data_preprocessing.sh 실행 후 생성)
             +--total_data.json                        # 모든 데이터셋을 전처리한 파일
             +--preprocessed_data.json                 # 모든 데이터셋에서 음성파일이 존재하지 않는 데이터를 제거 후, 테스트데이터와 훈련 데이터를 분리한 파일
             +--test_preprocessed_data.json            # preprocessed_data.json에서 테스트 데이터를 추출한 파일
@@ -134,9 +134,9 @@ python test.py --all
       +--TOTAL(Data_Preprocessing.sh 실행 후 생성)     # 모든 데이터를 TOTAL 폴더에 복사한 후, 전처리 및 훈련 진행
             +--hidden_states                          # 훈련 및 추론을 빨리 진행하기 위해, 미리 훈련된 Wav2Vec2모델에서 인코딩한 결과를 미리 저장하여 활용.
 
-      +--Setup.sh                         # update, upgrade 및 모델 생성 시 필요한 라이브러리 설치
+      +--setup.sh                         # update, upgrade 및 모델 생성 시 필요한 라이브러리 설치
 
-      +--Data_Preprocessing.sh            # 데이터 전처리 및 훈련, 테스트 데이터셋 분리 저장
+      +--data_preprocessing.sh            # 데이터 전처리 및 훈련, 테스트 데이터셋 분리 저장
 
       +--config.py                        # 교사모델 훈련시 필요한 하이퍼파라미터 정의
 

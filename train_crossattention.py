@@ -92,10 +92,11 @@ if args.cuda != 'cuda:0':
 def train(model,optimizer, dataloader):
     start_time = time.time()
 
-
     print("Train start")
     model.train()
-    model.freeze()
+    #model.freeze()
+    
+    # 각 발화 및 스크립트 별 평가자들의 평가결과를 Softmax로 사용, MSEloss를 이용해 학습
     loss_func = torch.nn.MSELoss().to(train_config['cuda'])
 
     tqdm_train = tqdm(total=len(dataloader), position=1)
@@ -106,9 +107,6 @@ def train(model,optimizer, dataloader):
         batch_x, batch_y = batch[0], batch[1]
 
         outputs = model(batch_x)
-        #print(batch_y[0])
-        #print(outputs[0])
-        #break
         loss = loss_func(outputs.to(torch.float32).to(train_config['cuda']), batch_y.to(torch.float32).to(train_config['cuda']))
         loss_list.append(loss.item())
         
@@ -138,14 +136,17 @@ def main():
 
     #audio_conf['path'] = './TOTAL/Extracted_Dataset/'
 
+    # 데이터셋 불러오기
     dataset = MERGEDataset(data_option='train', path='./data/')
     dataset.prepare_text_data(text_conf)
 
+    # 동일한 결과를 얻기위한 seed설정
     seed = 1024
     torch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
 
+    # 모델 생성
     model = MultiModalForCrossAttention(audio_conf, text_conf, cross_attention_conf, args.text_only, args.audio_only)
 
     device = args.cuda
@@ -164,11 +165,11 @@ def main():
         print("checkpoint will be saved every 5epochs!")
 
     for epoch in range(args.epochs):
-
         dataloader = DataLoader(dataset, batch_size=args.batch, shuffle=args.shuffle,
                                     collate_fn=lambda x: (x, torch.FloatTensor([i['label'] for i in x])))
         train(model, optimizer, dataloader)
-
+        
+        # 5의 배수 epoch마다 모델 저장
         if (epoch+1) % 5 == 0:
             if args.save:
                 torch.save(model,'./ckpt/{}_epoch{}.pt'.format(args.model_name,epoch))

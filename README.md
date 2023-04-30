@@ -94,6 +94,8 @@ python KD_train_crossattention.py --model_name audio_student --audio_only True
 mkdir ckpt/test_all
 cp ckpt/* ckpt/test_all/
 python test.py --all
+
+# test.py의 결과는 "result_all_model2.csv"에서 
 ```
 
 

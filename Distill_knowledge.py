@@ -8,7 +8,7 @@ from torch.utils.data.dataloader import DataLoader
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
 
 from models.multimodal import TextEncoder, SpeechEncoder
-from my_merdataset import *
+from merdataset import *
 from mini_config import *
 from utils import *
 

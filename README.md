@@ -70,6 +70,9 @@ bash Data_Preprocessing.sh
 
 > 😊 Train
 ```bash
+# 멀티모달 교사 모델 훈련
+python train_crossattention.py --model_name multimodal_teacher
+
 # 교사모델을 활용해, 데이터셋에 증류 데이터(Softmax) 추가
 #--teacher_name 옵션으로 MultiModal 교사모델의 이름_epoch수를 입력한다.
 #--data_path 옵션으로 softmax 데이터를 추가할 기존 데이터셋의 경로를 입력 (기본값, "data/train_preprocessed_data.json")
@@ -77,11 +80,11 @@ python Distill_knowledge.py --teacher_name multimodal_teacher_epoch4
 
 # miniconfig.py 를 수정해서 Epoch를 포함한 하이퍼파라미터 변경
 # 멀티모달 학생 모델 지식증류 훈련
-python KD_my_train_crossattention.py --model_name multimodal_student
+python KD_train_crossattention.py --model_name multimodal_student
 # 문자모달 학생 모델 지식증류 훈련
-python KD_my_train_crossattention.py --model_name text_student --text_only True 
+python KD_train_crossattention.py --model_name text_student --text_only True 
 # 음성모달 학생 모델 지식증류 훈련
-python KD_my_train_crossattention.py --model_name audio_student --audio_only True
+python KD_train_crossattention.py --model_name audio_student --audio_only True
 ```
 
 > 😊 Test
@@ -89,7 +92,7 @@ python KD_my_train_crossattention.py --model_name audio_student --audio_only Tru
 # pt 파일은 훈련의 5번째 Epoch마다 생성됨. (예: 5, 10, 11....)
 # 여러 파일을 테스트 하기위해 test_all파일에 복사
 cp ckpt/* ckpt/test_all/
-python my_test.py --all
+python test.py --all
 ```
 
 
@@ -143,11 +146,11 @@ python my_test.py --all
             +--test_preprocessed_data.json   # preprocessed_data.json에서 test데이터를 추출한 파일
             +--train_preprocessed_data.json   # preprocessed_data.json에서 train데이터를 추출한 파일
       +--models
-            +--module_for clossattention
+            +--module_for_clossattention.py
             +--multimodal.py
-            +--multimodal_attention
-            +--multimodal_cross_attention
-            +--multimodal_mixer      
+            +--multimodal_attention.py
+            +--multimodal_cross_attention.py
+            +--multimodal_mixer.py
       +--merdataset.py
       +--preprocessing.py
       +--utils.py

@@ -96,7 +96,9 @@ def train(model,optimizer, dataloader):
 
     print("Train start")
     model.train()
-    model.freeze()
+    #model.freeze()
+    
+    # MSE loss를 사용해 교사모델의 증류된 지식을 학습
     loss_func = torch.nn.MSELoss().to(train_config['cuda'])
 
     tqdm_train = tqdm(total=len(dataloader), position=1)
@@ -109,7 +111,8 @@ def train(model,optimizer, dataloader):
         knowledge = torch.tensor([item['knoledge_distillation'][0] for item in batch_x])
 
         outputs = model(batch_x)
-
+        
+        # 학생모델이 예측한 값과, 교사모델이 예측한 값에 대한 loss 두가지 사용
         loss1 = loss_func(outputs.to(torch.float32).to(train_config['cuda']), batch_y.to(torch.float32).to(train_config['cuda']))
         loss2 = loss_func(outputs.to(torch.float32).to(train_config['cuda']), knowledge.to(torch.float32).to(train_config['cuda']))
         total_loss = loss1 + loss2
@@ -149,6 +152,7 @@ def main():
     np.random.seed(seed)
     random.seed(seed)
 
+    # 학생모델 
     model = mini_MultiModalForCrossAttention(audio_conf,text_conf,cross_attention_conf, args.text_only, args.audio_only)
 
     device = args.cuda

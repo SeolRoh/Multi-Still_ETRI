@@ -46,25 +46,21 @@ requires packages: {
 }
 ```
 
+> 😊 Docker container run
+```bash
+docker container run -d -it --name multi_still --gpus all python:3.9
+```
+
 > 😊 Environment Setting
 ```bash
-apt-get update && apt-get install -y
-apt install ffmpeg -y
-pip install numpy==1.22.3 pandas==1.4.2 scikit-learn transformers==4.18.0 tokenizers==0.12.1 soundfile==0.10.3.post1
-pip install torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
+git clone https://github.com/SeolRoh/Multi-Still_ETRI.git
+cd Multi-Still_ETRI
+bash setup.sh
 ```
 > 😊 Preprocessing
 ```bash
 # 데이터 전처리
-cd HappynJoy
-# KEMDy19, KEMDy20 데이터 전처리
-python KEMDy_my_preprocessing.py
-# 외부데이터([AI Hub 감정 분류를 위한 대화 음성 데이터셋]) 전처리
-#python external_data1_my_preprocessing.py
-# 외부데이터([AI Hub 감정 분류용 데이터셋]) 전처리
-#python external_data2_my_preprocessing.py
-# 감정의 불균형을 막기 위해, 하나의 특정 감정을 일정값 이하로 정리
-python data_balancing.py
+bash Data_Preprocessing.sh
 ```
 
 + 7가지 감정 레이블의 데이터 불균형 완화 전후 분포 비교
@@ -74,81 +70,99 @@ python data_balancing.py
 
 > 😊 Train
 ```bash
-# 멀티모달 크로스 어텐션 교사 모델 학습
-python my_train_crossattention.py --model_name multimodal_teacher
-# 교사모델을 활용해, 데이터셋에 증류 데이터 추가
-python Distill_knowledge.py --model_name multimodal_teacher_epoch29
+# 교사모델을 활용해, 데이터셋에 증류 데이터(Softmax) 추가
+#--teacher_name 옵션으로 MultiModal 교사모델의 이름_epoch수를 입력한다.
+#--data_path 옵션으로 softmax 데이터를 추가할 기존 데이터셋의 경로를 입력 (기본값, "data/train_preprocessed_data.json")
+python Distill_knowledge.py --teacher_name multimodal_teacher_epoch4 
+
+# miniconfig.py 를 수정해서 Epoch를 포함한 하이퍼파라미터 변경
 # 멀티모달 학생 모델 지식증류 훈련
-python mini_my_train_crossattention.py --model_name multimodal_student
+python KD_my_train_crossattention.py --model_name multimodal_student
 # 문자모달 학생 모델 지식증류 훈련
-python mini_my_train_crossattention.py --text_only True --model_name text_student
+python KD_my_train_crossattention.py --model_name text_student --text_only True 
 # 음성모달 학생 모델 지식증류 훈련
-python mini_my_train_crossattention.py --audio_only True --model_name audio_student
+python KD_my_train_crossattention.py --model_name audio_student --audio_only True
 ```
 
 > 😊 Test
 ```bash
-# pt file will generate  in ckpt after train
-```
-> 😊 setup.sh
-```bash
-# 업데이트
-apt-get update && apt-get upgrade -y
-# 음성 데이터를 처리하기 위한 모듈 설치
-apt install ffmpeg -y
-# 학습을 위한 파이썬 라이브러리 설치
-pip install numpy==1.22.3 pandas==1.4.2 scikit-learn transformers==4.18.0 tokenizers==0.12.1 soundfile==0.10.3.post1 moviepy
-pip install torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
+# pt 파일은 훈련의 5번째 Epoch마다 생성됨. (예: 5, 10, 11....)
+# 여러 파일을 테스트 하기위해 test_all파일에 복사
+cp ckpt/* ckpt/test_all/
+python my_test.py --all
 ```
 
 
 > 😁 Directory
 - 코드 구현을 위해서는 ETRI에서 제공하는 파일(KEMDy19 & KEMDy20)과 AI Hub 감정 데이터 파일이 알맞은 위치에 있어야합니다.
 ```
-+--KEMDy20
-      +--annotation
-      +--wav
-      # train과 inference 속도를 향상시키기 위해 pretrained Wav2Vec2모델에서 연산한 결과를 미리 저장하여 활용하였음.
-            +--audio_embeddings    
-                  +--hidden_state.json    
-                  +--extract_feature.json
-      # train과 inference 속도를 향상시키기 위해 pretrained Wav2Vec2모델에서 연산한 결과를 미리 저장하여 활용하였음.
-            +--hidden_states
-                +-- {file_name}.pt
-      # AI Hub 감성대화 말뭉치 file들이 저장된 폴더
-            +--emotiondialogue
-                +--F_000001.wav
-                ...
-                +--M_005000.wav
-            +--Sessoion01
-            ...
-            +--Session40
-      +--TEMP
-      +--IBI
-      +--EDA
-+--data
-      +--processed_KEMDy20.json   # KEMDy20데이터와 감성대화 말뭉치를 전처리한 파일
-+--models
-      +--module_for clossattention
-      +--multimodal.py
-      +--multimodal_attention
-      +--multimodal_cross_attention
-      +--multimodal_mixer      
-+--merdataset.py
-+--preprocessing.py
-+--utils.py
-+--test.py
-+--config.py
-+--train.py
-+--train_crossattention.py
-+--train_mixer.py
-```
++--Multi-Still_ETRI
+      +--KEMDy19
+            +--annotation
+            +--ECG
+            +--EDA
+            +--TEMP
+            +--wav
+            # train과 inference 속도를 향상시키기 위해 미리 훈련된 Wav2Vec2모델에서 인코딩한 결과를 미리 저장하여 활용.
+      +--KEMDy20
+            +--annotation
+            +--wav
+            # train과 inference 속도를 향상시키기 위해 pretrained Wav2Vec2모델에서 연산한 결과를 미리 저장하여 활용하였음.
+            +--TEMP
+            +--IBI
+            +--EDA
+      +--감정 분류를 위한 대화 음성 데이터셋 (선택)
+            # 음성 데이터가 포함되어있는 폴더
+            +--4차년도
+            +--5차년도
+            +--5차년도_2차
+            # 각 음성데이터에 대한 정보가 담겨있는 csv파일
+            +--4차년도.csv
+            +--5차년도.csv
+            +--5차년도_2차.csv
+      +--감정분류용 데이터셋 (선택)
+            # 영상 및 이미지가 포함되어 있는 폴더
+            +--0~9_감정분류_데이터셋
+            +--10~19_감정분류_데이터셋
+            +--20~29_감정분류_데이터셋
+            +--30~39_감정분류_데이터셋
+            +--40~49_감정분류_데이터셋
+            +--50~59_감정분류_데이터셋
+            +--60~69_감정분류_데이터셋
+            +--70~79_감정분류_데이터셋
+            +--80~89_감정분류_데이터셋
+            +--90~99_감정분류_데이터셋
+            # 각 영상 및 이미지정보의 스크립트 데이터
+            +--Script.hwd 
+            # 각 영상 및 이미지정보의 참가자 정보 데이터
+            +--참가자정보.xlsx
+            
+      +--data
+            +--total_data.json   # 모든 데이터셋을 전처리한 파일
+            +--preprocessed_data.json   # 모든 데이터셋에서 감정 분포를 완화한 파일
+            +--test_preprocessed_data.json   # preprocessed_data.json에서 test데이터를 추출한 파일
+            +--train_preprocessed_data.json   # preprocessed_data.json에서 train데이터를 추출한 파일
+      +--models
+            +--module_for clossattention
+            +--multimodal.py
+            +--multimodal_attention
+            +--multimodal_cross_attention
+            +--multimodal_mixer      
+      +--merdataset.py
+      +--preprocessing.py
+      +--utils.py
+      +--test.py
+      +--config.py
+      +--train.py
+      +--train_crossattention.py
+      +--train_mixer.py
+      ```
 
 > 😆 Base Model
 | Encoder | Architecture | pretrained-weights | 
 | ------------ | ------------- | ------------- |
 | Audio Encoder | pretrained Wav2Vec 2.0 | kresnik/wav2vec2-large-xlsr-korean |
-| Text Encoder | pretrained Electra | beomi/KcELECTRA-base | 
+| Text Encoder | pretrained Electra | monologg/koelectra-base | 
 
 > 😃 Arguments
 - train.py

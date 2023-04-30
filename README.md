@@ -102,70 +102,70 @@ python test.py --all
 +--Multi-Still_ETRI
       +--KEMDy19
             +--annotation
-            +--ECG
             +--EDA
             +--TEMP
             +--wav
-            # train과 inference 속도를 향상시키기 위해 미리 훈련된 Wav2Vec2모델에서 인코딩한 결과를 미리 저장하여 활용.
+
       +--KEMDy20
             +--annotation
             +--wav
-            # train과 inference 속도를 향상시키기 위해 pretrained Wav2Vec2모델에서 연산한 결과를 미리 저장하여 활용하였음.
             +--TEMP
             +--IBI
-            +--EDA
-      +--감정 분류를 위한 대화 음성 데이터셋 (선택)
-            # 음성 데이터가 포함되어있는 폴더
-            +--4차년도
-            +--5차년도
-            +--5차년도_2차
-            # 각 음성데이터에 대한 정보가 담겨있는 csv파일
-            +--4차년도.csv
-            +--5차년도.csv
-            +--5차년도_2차.csv
-      +--감정분류용 데이터셋 (선택)
-            # 영상 및 이미지가 포함되어 있는 폴더
-            +--0~9_감정분류_데이터셋
-            +--10~19_감정분류_데이터셋
-            +--20~29_감정분류_데이터셋
-            +--30~39_감정분류_데이터셋
-            +--40~49_감정분류_데이터셋
-            +--50~59_감정분류_데이터셋
-            +--60~69_감정분류_데이터셋
-            +--70~79_감정분류_데이터셋
-            +--80~89_감정분류_데이터셋
-            +--90~99_감정분류_데이터셋
-            # 각 영상 및 이미지정보의 스크립트 데이터
-            +--Script.hwd 
-            # 각 영상 및 이미지정보의 참가자 정보 데이터
-            +--참가자정보.xlsx
-            
-      +--data
-            +--total_data.json   # 모든 데이터셋을 전처리한 파일
-            +--preprocessed_data.json   # 모든 데이터셋에서 감정 분포를 완화한 파일
-            +--test_preprocessed_data.json   # preprocessed_data.json에서 test데이터를 추출한 파일
-            +--train_preprocessed_data.json   # preprocessed_data.json에서 train데이터를 추출한 파일
+            +--EDA 
+
       +--models
-            +--module_for_clossattention.py
+            +--module_for_clossattention
+                  +--MultiheadAttention.py
+                  +--PositionalEmbedding.py
+                  +--Transformer.py
             +--multimodal.py
             +--multimodal_attention.py
             +--multimodal_cross_attention.py
             +--multimodal_mixer.py
-      +--merdataset.py
-      +--preprocessing.py
-      +--utils.py
-      +--test.py
-      +--config.py
-      +--train.py
-      +--train_crossattention.py
-      +--train_mixer.py
+
+      +--data (Data_Preprocessing.sh 실행 후 생성)
+            +--total_data.json                # 모든 데이터셋을 전처리한 파일
+            +--preprocessed_data.json         # 모든 데이터셋에서 음성파일이 존재하지 않는 데이터를 제거 후, 테스트데이터와 훈련 데이터를 분리한 파일
+            +--test_preprocessed_data.json    # preprocessed_data.json에서 테스트 데이터를 추출한 파일
+            +--train_preprocessed_data.json   # preprocessed_data.json에서 훈련 데이터를 추출한 파일
+
+      +--ckpt (train_crossattention.py, KD_train_crossattention.py 실행 후 생성)
+            +--test_all   # 여러 모델들을 한번에 테스트할 때 복사해줄 폴더
+            +--*.pt       # 모델 훈련 후, 5의 배수 Epoch마다 저장되는 모델 파일
+
+      +--TOTAL                  # 모든 데이터를 TOTAL 폴더에 복사한 후, 전처리 및 훈련 진행
+            +--hidden_states    # 훈련 및 추론을 빨리 진행하기 위해, 미리 훈련된 Wav2Vec2모델에서 인코딩한 결과를 미리 저장하여 활용.
+
+      +--Setup.sh               # update, upgrade 및 모델 생성 시 필요한 라이브러리 설치
+
+      +--Data_Preprocessing.sh  # 데이터 전처리 및 훈련, 테스트 데이터셋 분리 저장
+
+      +--config.py              # 교사모델 훈련시 필요한 하이퍼파라미터 정의
+
+      +--Data_Balancing.py      # 데이터셋 전처리 및 훈련, 테스트 데이터셋 분리 저장
+
+      +--Distill_knowledge.py   # 훈련된 교사 모델을 이용해, 데이터 셋에 증류된 지식(Softmax) 데이터 추가저장 
+
+      +--KD_train_crossattention.py   # 증류된 지식을 통해, 학생모델을 훈련
+
+      +--KEMDy_preprocessing.py       # 모든 데이터를 TOTAL 폴더로 이동 후, 데이터셋으로 가공
+
+      +--merdataset.py          # 데이터를 읽고, 모델 훈련시 데이터를 제공해주는 DataLoader 파일
+
+      +--mini_config.py          # 학생모델 훈련시 필요한 하이퍼파라미터 정의
+
+      +--test.py                # ckpt 폴더에 저장되어 있는 모델을 테스트
+      
+      +--train_crossattention.py  # 크로스 어텐션 기반 교사모델을 훈련하는 파일
+
+      +--utils.py               # logger, get_params 등 모델 정보를 볼 수 있는 기능 포함
 ```
 
 > 😆 Base Model
-| Encoder | Architecture | pretrained-weights | 
-| ------------ | ------------- | ------------- |
+|     Encoder   |      Architecture      |         pretrained-weights         | 
+| ------------- | ---------------------- | ---------------------------------- |
 | Audio Encoder | pretrained Wav2Vec 2.0 | kresnik/wav2vec2-large-xlsr-korean |
-| Text Encoder | pretrained Electra | monologg/koelectra-base | 
+|  Text Encoder |   pretrained Electra   |       monologg/koelectra-base      | 
 
 > 😃 Arguments
 - train.py

@@ -165,7 +165,7 @@ python test.py --all
 |     Encoder   |      Architecture      |         pretrained-weights         | 
 | ------------- | ---------------------- | ---------------------------------- |
 | Audio Encoder | pretrained Wav2Vec 2.0 | kresnik/wav2vec2-large-xlsr-korean |
-|  Text Encoder |   pretrained Electra   |       monologg/koelectra-base      | 
+|  Text Encoder |   pretrained KoElectra |       monologg/koelectra-base      | 
 
 > 😃 Arguments
 - train.py

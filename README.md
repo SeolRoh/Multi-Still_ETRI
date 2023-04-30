@@ -65,7 +65,7 @@ bash Data_Preprocessing.sh
 
 + 7가지 감정 레이블의 데이터 불균형 완화 전후 분포 비교
 
-![](https://github.com/jo1132/HappynJoy/blob/main/images/%ED%95%99%EC%8A%B5%EB%8D%B0%EC%9D%B4%ED%84%B0_%EB%9D%BC%EB%B2%A8%EB%B6%84%ED%8F%AC_%EB%8F%99%EA%B7%B8%EB%9D%BC%EB%AF%B8_0428.png)
+![](https://github.com/SeolRoh/Multi-Still_ETRI/blob/main/images/datapreprocessing.png)
 
 
 > 😊 Train
@@ -156,7 +156,7 @@ python my_test.py --all
       +--train.py
       +--train_crossattention.py
       +--train_mixer.py
-      ```
+```
 
 > 😆 Base Model
 | Encoder | Architecture | pretrained-weights | 
@@ -173,9 +173,9 @@ python my_test.py --all
 > 😀 Model Architecture
 - `Multi-Still` 경량화 기술 중 하나인 지식 증류 (Knowledge Distillation)를 사용하여 실시간 감정인식을 위한 멀티모달 구조를 경량화하는 방법 
 - 👩‍🏫➡👨‍💻 Muti-Still Architecture
-![](https://velog.velcdn.com/images/dkddkkd55/post/21aa86c8-fa0e-4669-955e-d6f113547a9b/image.png)
+![](https://github.com/SeolRoh/Multi-Still_ETRI/blob/main/images/structure.png)
 - 👩‍🏫 Teacher Model
-![](https://velog.velcdn.com/images/dkddkkd55/post/a6ca8342-0faa-4990-a334-3694b12a2f07/image.png)
+![](https://github.com/SeolRoh/Multi-Still_ETRI/blob/main/images/teacher.png)
 
 > 😆 Experiments 
 + 텍스트 모델(KoELECTRA)
@@ -183,7 +183,7 @@ python my_test.py --all
 + 교사 모델(Multimodal Cross-Attention)
 + 학생모델((a)Text-OnlyStudent, (b)Audio-OnlyStudent, (c)MultimodalStudent)
 
-![](https://github.com/jo1132/HappynJoy/blob/main/images/Experiments.png)
+![](https://github.com/SeolRoh/Multi-Still_ETRI/blob/main/images/Experiments.png)
 
 
 > 🙂 References

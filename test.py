@@ -159,7 +159,7 @@ def main():
         df = []
         for name in model_names:
 
-            model = torch.load('./ckpt/{}'.format(name))
+            model = torch.load('./ckpt/test_all/{}'.format(name))
             loss, acc, recall, precision, f1, confusion, std, params, inference_time = test(model, test_data)
 
             result = {

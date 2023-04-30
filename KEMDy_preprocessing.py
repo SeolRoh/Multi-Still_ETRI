@@ -19,13 +19,15 @@ def GenerateSubDir(PATH, COPYPATH):
                 SearchFiles(cur_path, COPYPATH, tagname)
             else:
                 CopyFile(cur_path, os.path.join(COPYPATH, tagname+'_'+cur))
-
+    
+    #"KEMDy19", "KEMDy20" 파일 탐색
     os.makedirs(COPYPATH, exist_ok=True)
     for Ori in ["KEMDy19", "KEMDy20"]:
         for cur in os.listdir(os.path.join(PATH, Ori)):
             cur_path = os.path.join(PATH, Ori, cur)
             SearchFiles(cur_path, COPYPATH, cur)
 
+#데이터셋이 가지고 있는 감정 데이터 DataFrame으로  
 def Read_DataFrames(COPYPATH, head, tail, n_sess, cols):
         base_df = pd.DataFrame(columns=['Segment ID', 'Emotion', 'Valence', 'Arousal']) 
 
@@ -60,7 +62,7 @@ def cut_df(df, filter_cols):
     df.columns = ['Segment ID', 'Emotion', 'Valence', 'Arousal']
     return df
 
-# KEMDy19 데이터셋 합치기
+# KEMDy19 데이터셋 M, F 합치기
 def merge_data(F_df, M_df, neutral=True):
     aro = 0
     vals = 0
@@ -84,6 +86,7 @@ def merge_data(F_df, M_df, neutral=True):
 
     return base_df
 
+# 음성파일에 맞는 스크립트 데이터 불러오기
 def Read_txt(path):
     script = ''
     if os.path.isfile(path):
@@ -105,13 +108,14 @@ if __name__ == '__main__':
     PATH = './'
     COPYPATH = os.path.join(PATH, "TOTAL")
     GenerateSubDir(PATH, COPYPATH)
-
-
-    # 아까 모아놓았던 경로
+    
+    # 저장할 데이터 columns
     df = pd.DataFrame(columns=['Segment ID', 'Emotion', 'Valence', 'Arousal'])
 
+    # KEMDy20 에서 사용할 columns
     cols1 = ['Segment ID', 'Total Evaluation', ' .1', ' .2']
     cols2 = cols1.copy()
+    # KEMDy19 에서 사용할 columns
     cols2[2] = 'Unnamed: 11'
     cols2[3] = 'Unnamed: 12'
 
@@ -119,6 +123,7 @@ if __name__ == '__main__':
     df2 = Read_DataFrames(COPYPATH, "annotation_Session", "_F_res.csv", 20, cols2)
     df3 = Read_DataFrames(COPYPATH, "annotation_Session", "_M_res.csv", 20, cols2)
     
+    # KEMDy19, KEMDy20 합치기
     df = pd.concat([df, merge_data(df2, df3)], axis=0)
     df = pd.concat([df, df1], axis=0)
 
@@ -126,6 +131,7 @@ if __name__ == '__main__':
     df = df.reset_index().drop(labels=['index'], axis=1)
     df['Script'] = [0]*len(df)
 
+    # 음성 데이터 스크립트 불러오기
     for idx in range(len(df)):
         if type(df.iloc[idx]['Segment ID']) == str:
             SegID = "wav_"+df.iloc[idx]['Segment ID']
@@ -135,11 +141,13 @@ if __name__ == '__main__':
             print(df.iloc[idx]['Segment ID'])
             df = df.drop(idx, axis=0)
 
+    # 음성데이터 이름 저장
     df['Audio'] = df['Segment ID'].apply(GetWavPath)
     df = df.dropna(axis=0)
     df = df[['Segment ID', 'Audio', 'Script', 'Emotion']]
     #df.to_csv(os.path.join(PATH, 'merged_data.csv'), encoding="utf-8-sig", index=False)
 
+    # 데이터 
     base_json = {"data":[]}
     for i in range(len(df)):
         data = {

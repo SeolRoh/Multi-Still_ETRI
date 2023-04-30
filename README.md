@@ -169,11 +169,14 @@ Audio Encoder | pretrained Wav2Vec 2.0 | kresnik/wav2vec2-large-xlsr-korean
 Text Encoder | pretrained Electra | monologg/koelectra-base 
 
 > 😃 Arguments
-- train.py
-Arguments | Description
+- train_crossattention.py
+
+Arguments | Description | Default
 :------------: | :-------------:
-Audio Encoder | pretrained Wav2Vec 2.0
-Text Encoder | pretrained Electra
+--epochs | 모델 반복 훈련 수 | config.py의 train_config에서 설정된 값
+
+
+
 - train_crossattention.py
 - train_knowledge_distillation.py
 - test.py

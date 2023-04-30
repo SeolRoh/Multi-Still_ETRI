@@ -33,29 +33,29 @@ def parse_args():
         help="Distilled teacher's knowledge path"
     )
 
-
-
     args = parser.parse_args()
     return args
-
 
 args = parse_args()
 if args.cuda != 'cuda:0':
     text_config['cuda'] = args.cuda
     test_config['cuda'] = args.cuda
 
+    
 def main():
     text_conf = pd.Series(text_config)
     if args.teacher_name:
-
+        
+        # 교사 모델 불러오기
         model = torch.load('./ckpt/{}.pt'.format(args.teacher_name))
         model.eval()
         #print(model)
     
-        
+        # 데이터 파일 읽기
         with open(args.data_path,'r') as file:
             json_data = json.load(file)
-
+        
+        # 데이터의 'knoledge_distillation'을 키로, 교사모델의 예측 softmax값 추가
         for i in range(len(json_data['data'])):
             if json_data['data'][i].get('knoledge_distillation', 1):
                 K = text_config['K']

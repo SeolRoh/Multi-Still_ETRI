@@ -17,14 +17,21 @@ with open(json_path,'r') as file:
 # 감정 클래스 분포 확인
 Final_data = {"data" : []}
 emo_count = {}
+del_list = []
+
 for idx, item in enumerate(base_json['data']):
     if not (os.path.isfile(os.path.join(PATH, 'TOTAL',  item['wav']))):
-        print('파일없음 삭제 :', os.path.join(PATH, 'TOTAL',  item['wav']))
-        del base_json['data'][idx]
-        continue
+        del_list.append(idx)
 
     for emo in item['Emotion']:
         emo_count[emo] = emo_count.get(emo, 0) + 1
+
+while (del_list):
+    idx = del_list.pop()
+    item = base_json['data'][idx]
+
+    print('파일없음 삭제 :', os.path.join(PATH, 'TOTAL',  item['wav']))
+    del base_json['data'][idx]
     
 print("감정 클래스 분포 확인")
 print(emo_count)
